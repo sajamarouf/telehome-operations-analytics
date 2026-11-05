@@ -1,0 +1,173 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "24d8f912b5979d4977bb",
+  "position": {
+    "x": 1360,
+    "y": 676,
+    "z": 27000,
+    "height": 380,
+    "width": 536,
+    "tabOrder": 27000
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Staff"
+                    }
+                  },
+                  "Property": "StaffName"
+                }
+              },
+              "queryRef": "Staff.StaffName",
+              "nativeQueryRef": "Staff",
+              "displayName": "Staff",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Staff"
+                    }
+                  },
+                  "Property": "Staff Category"
+                }
+              },
+              "queryRef": "Staff.Staff Category",
+              "nativeQueryRef": "Category",
+              "displayName": "Category"
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Completion Rate"
+                }
+              },
+              "queryRef": "_Measures.Completion Rate",
+              "nativeQueryRef": "Completion",
+              "displayName": "Completion"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Average Satisfaction Score"
+                }
+              },
+              "queryRef": "_Measures.Average Satisfaction Score",
+              "nativeQueryRef": "Satisfaction",
+              "displayName": "Satisfaction"
+            }
+          ]
+        },
+        "Size": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Total Referrals"
+                }
+              },
+              "queryRef": "_Measures.Total Referrals",
+              "nativeQueryRef": "Referrals",
+              "displayName": "Referrals"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "legend": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TopRight'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Completion vs Satisfaction \u00b7 per Staff'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

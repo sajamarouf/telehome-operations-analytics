@@ -1,0 +1,152 @@
+table Referrals
+	lineageTag: 6330def8-2913-4736-bdf3-5ded621549c2
+
+	column ReferralID
+		dataType: string
+		lineageTag: d77502ef-1d64-45a6-abb9-aca789ad7e1d
+		summarizeBy: none
+		sourceColumn: ReferralID
+
+		annotation SummarizationSetBy = Automatic
+
+	column PatientID
+		dataType: string
+		lineageTag: 3d9a00f2-df22-45b4-9ee4-7a8c9faaa98b
+		summarizeBy: none
+		sourceColumn: PatientID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReferralDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a24e9c2b-b9f3-457a-bf04-dc811375a431
+		summarizeBy: none
+		sourceColumn: ReferralDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ScheduledDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 78b412fc-0c2f-4ec1-9343-1f403299aa62
+		summarizeBy: none
+		sourceColumn: ScheduledDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column VisitDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 56d406a0-e0aa-41a4-98e6-75e8840e992d
+		summarizeBy: none
+		sourceColumn: VisitDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Status
+		dataType: string
+		lineageTag: 26ec7cca-49ec-4eec-92e2-aeaa2b12d994
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReferralSource
+		dataType: string
+		lineageTag: 11408761-afcb-4c1d-8552-a7d951dd3664
+		summarizeBy: none
+		sourceColumn: ReferralSource
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: aab2b9e0-31c7-44b2-80bd-df2e77433713
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceTypeID
+		dataType: string
+		lineageTag: f90101c4-b3b6-4c8d-8a24-1df83e2f1b6a
+		summarizeBy: none
+		sourceColumn: ServiceTypeID
+
+		annotation SummarizationSetBy = Automatic
+
+	column StaffID
+		dataType: string
+		lineageTag: 41103829-6560-4c47-ac1c-5ae0c3d92871
+		summarizeBy: none
+		sourceColumn: StaffID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResponseHours
+		dataType: double
+		lineageTag: b42969d9-5fcf-41ea-96af-7617a86abf48
+		summarizeBy: sum
+		sourceColumn: ResponseHours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column VisitDurationMinutes
+		dataType: int64
+		formatString: 0
+		lineageTag: 88ef1342-7661-474a-b378-e652748c5189
+		summarizeBy: sum
+		sourceColumn: VisitDurationMinutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column SatisfactionScore
+		dataType: int64
+		formatString: 0
+		lineageTag: 40902b1e-5a0f-4a98-86f4-00bd5bf772a4
+		summarizeBy: sum
+		sourceColumn: SatisfactionScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComplaintFlag
+		dataType: int64
+		formatString: 0
+		lineageTag: 51f812cc-1bb2-4f20-8c48-606afc77bdbe
+		summarizeBy: sum
+		sourceColumn: ComplaintFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Referrals = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Telehome\data\Telehome_Analytics_Synthetic_Dataset.xlsx"), null, true),
+				    Referrals_Sheet = Source{[Item="Referrals",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Referrals_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ReferralID", type text}, {"PatientID", type text}, {"ReferralDate", type date}, {"ScheduledDate", type date}, {"VisitDate", type date}, {"Status", type text}, {"ReferralSource", type text}, {"ServiceTypeID", type text}, {"StaffID", type text}, {"City", type text}, {"ResponseHours", type number}, {"VisitDurationMinutes", Int64.Type}, {"SatisfactionScore", Int64.Type}, {"ComplaintFlag", Int64.Type}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Changed Type",{"ReferralID", "PatientID", "ReferralDate", "ScheduledDate", "VisitDate", "Status", "ReferralSource", "City", "ServiceTypeID", "StaffID", "ResponseHours", "VisitDurationMinutes", "SatisfactionScore", "ComplaintFlag"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Reordered Columns",{{"Status", Text.Trim, type text}, {"ReferralSource", Text.Trim, type text}, {"City", Text.Trim, type text}}),
+				    #"Cleaned Text" = Table.TransformColumns(#"Trimmed Text",{{"Status", Text.Clean, type text}, {"ReferralSource", Text.Clean, type text}, {"City", Text.Clean, type text}}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Cleaned Text",{{"City", Text.Proper, type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word","completed","Completed",Replacer.ReplaceText,{"Status"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value",null,"Not Specified",Replacer.ReplaceValue,{"City"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1",null,"Not Specified",Replacer.ReplaceValue,{"ReferralSource"}),
+				    #"Reordered Columns1" = Table.ReorderColumns(#"Replaced Value2",{"ReferralID", "PatientID", "ReferralDate", "ScheduledDate", "VisitDate", "ReferralSource", "City", "ServiceTypeID", "Status", "StaffID", "ResponseHours", "VisitDurationMinutes", "SatisfactionScore", "ComplaintFlag"})
+				in
+				    #"Reordered Columns1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

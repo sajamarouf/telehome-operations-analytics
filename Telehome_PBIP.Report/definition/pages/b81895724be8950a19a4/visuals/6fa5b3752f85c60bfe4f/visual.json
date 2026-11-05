@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "6fa5b3752f85c60bfe4f",
+  "position": {
+    "x": 1376,
+    "y": 976,
+    "z": 31000,
+    "height": 64,
+    "width": 504,
+    "tabOrder": 31000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Assumption: each staff member can carry the current busiest staff member's weekly load. Synthetic data \u2014 for illustration.",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#9A97B3"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

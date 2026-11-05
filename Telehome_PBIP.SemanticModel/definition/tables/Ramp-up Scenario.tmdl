@@ -1,0 +1,18 @@
+table 'Ramp-up Scenario'
+	lineageTag: f5bb1bd4-c659-496f-aa1c-04188be90b79
+
+	column 'Referral Growth %'
+		dataType: int64
+		formatString: 0
+		lineageTag: 3bbf97b1-a427-4438-91eb-c7eda4dcd6b3
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = User
+
+	partition 'Ramp-up Scenario' = calculated
+		mode: import
+		source = GENERATESERIES(0, 100, 10)
+
+	annotation PBI_Id = 7dc4a23012845537749d6913e31ff47b
+

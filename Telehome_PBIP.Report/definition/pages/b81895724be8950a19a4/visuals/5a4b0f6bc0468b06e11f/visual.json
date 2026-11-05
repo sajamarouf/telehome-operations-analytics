@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "5a4b0f6bc0468b06e11f",
+  "position": {
+    "x": 1376,
+    "y": 668,
+    "z": 28000,
+    "height": 40,
+    "width": 504,
+    "tabOrder": 28000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Ramp-up Scenario",
+                    "textStyle": {
+                      "fontSize": "14pt",
+                      "color": "#1F1B3A",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

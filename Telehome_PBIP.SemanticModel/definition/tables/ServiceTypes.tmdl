@@ -1,0 +1,53 @@
+table ServiceTypes
+	lineageTag: c784167a-9616-4e30-b5bc-e1c3aca43bcd
+
+	column ServiceTypeID
+		dataType: string
+		lineageTag: 02569e2b-9070-4ed1-a1c2-1d2b01ae2ccf
+		summarizeBy: none
+		sourceColumn: ServiceTypeID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceType
+		dataType: string
+		lineageTag: aad09f41-694a-483a-ba12-abbfb6955278
+		summarizeBy: none
+		sourceColumn: ServiceType
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetResponseHours
+		dataType: int64
+		formatString: 0
+		lineageTag: 0756d610-ccff-4d63-b2d0-b9d85822098f
+		summarizeBy: none
+		sourceColumn: TargetResponseHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetSatisfaction
+		dataType: double
+		lineageTag: 06b11d75-e266-4b23-a5b6-715b86fbe4c7
+		summarizeBy: none
+		sourceColumn: TargetSatisfaction
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition ServiceTypes = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Telehome\data\Telehome_Analytics_Synthetic_Dataset.xlsx"), null, true),
+				    ServiceTypes_Sheet = Source{[Item="ServiceTypes",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(ServiceTypes_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ServiceTypeID", type text}, {"ServiceType", type text}, {"TargetResponseHours", Int64.Type}, {"TargetSatisfaction", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

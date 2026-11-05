@@ -1,0 +1,68 @@
+table Staff
+	lineageTag: e032235b-a3b7-4c8e-a563-49121968cbd1
+
+	column StaffID
+		dataType: string
+		lineageTag: 5724539d-0d9d-4675-b3ce-1c9fddfc48da
+		summarizeBy: none
+		sourceColumn: StaffID
+
+		annotation SummarizationSetBy = Automatic
+
+	column StaffName
+		dataType: string
+		lineageTag: 51f644d8-7202-4315-8236-5738149028e4
+		summarizeBy: none
+		sourceColumn: StaffName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Role
+		dataType: string
+		lineageTag: d0be03b8-7e64-4dbf-b895-abeded35c4bd
+		summarizeBy: none
+		sourceColumn: Role
+
+		annotation SummarizationSetBy = Automatic
+
+	column Team
+		dataType: string
+		lineageTag: f5db2233-5d12-491d-b098-77c4998a9486
+		summarizeBy: none
+		sourceColumn: Team
+
+		annotation SummarizationSetBy = Automatic
+
+	column HireDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 83e3999b-4eaa-4cfc-9c57-e349aa19d829
+		summarizeBy: none
+		sourceColumn: HireDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Staff Category' = IF(Staff[Role] = "Care Coordinator", "Non-clinical", "Clinical")
+		dataType: string
+		lineageTag: 79491a24-3509-4ddb-a182-e2940c39c032
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Staff = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Telehome\data\Telehome_Analytics_Synthetic_Dataset.xlsx"), null, true),
+				    Staff_Sheet = Source{[Item="Staff",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Staff_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"StaffID", type text}, {"StaffName", type text}, {"Role", type text}, {"Team", type text}, {"HireDate", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

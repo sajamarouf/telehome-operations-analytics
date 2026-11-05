@@ -1,0 +1,101 @@
+table Calendar
+	lineageTag: 3a48919e-456e-4cd0-806f-d547897b4b10
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: 9a5ac965-78ee-4fb4-992f-9493ca8f221f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 5daf23f5-4e2c-4df3-8136-59d73e15443b
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: 2fc7a1a2-e520-436c-a1c8-8c1dff6b0d9e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		lineageTag: 3efa381d-8e46-4f2e-a730-0655573358a2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year'
+		lineageTag: 1753f075-f89f-421c-b5fd-f9f406e1bc16
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Year]
+		sortByColumn: YearMonthSort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: 94e005fc-f076-47b1-ad4d-454f344e0bc1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonthSort =
+			
+			YEAR('Calendar'[Date]) * 100
+			+ MONTH('Calendar'[Date])
+		formatString: 0
+		lineageTag: c406935e-4338-45b0-b7df-d6dd1dab6614
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Text' = FORMAT('Calendar'[Year], "0")
+		lineageTag: 87b641e7-91a7-4940-acef-c9c8e36e235c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week Start' = 'Calendar'[Date] - WEEKDAY('Calendar'[Date], 2) + 1
+		formatString: dd mmm
+		lineageTag: a46ea9b2-03e4-4198-b2c2-8f2c7ebcf189
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source = ```
+				
+				ADDCOLUMNS(
+				    CALENDAR(
+				        MIN(Referrals[ReferralDate]),
+				        MAX(Referrals[ReferralDate])
+				    ),
+				    "Year", YEAR([Date]),
+				    "Month Number", MONTH([Date]),
+				    "Month", FORMAT([Date], "MMMM"),
+				    "Month Year", FORMAT([Date], "MMM YYYY"),
+				    "Quarter", "Q" & FORMAT([Date], "Q")
+				)
+				
+				```
+
+	annotation PBI_Id = a9e9330012d445cbbd849f98bc2710c9
+

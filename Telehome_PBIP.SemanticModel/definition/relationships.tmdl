@@ -1,0 +1,12 @@
+relationship b7efb590-739d-6a8e-59de-b8248cfa6f5a
+	fromColumn: Referrals.StaffID
+	toColumn: Staff.StaffID
+
+relationship 3caf8250-e5ab-c853-0c98-6be1dcdc472d
+	fromColumn: Referrals.ServiceTypeID
+	toColumn: ServiceTypes.ServiceTypeID
+
+relationship efe71b52-391f-43c4-f5ba-b98b60c66e64
+	fromColumn: Referrals.ReferralDate
+	toColumn: Calendar.Date
+

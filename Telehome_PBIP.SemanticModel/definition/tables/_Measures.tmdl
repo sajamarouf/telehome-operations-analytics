@@ -1,0 +1,184 @@
+table _Measures
+	lineageTag: 86f71ea1-cf66-4a05-ab0c-0c4ee11e1a10
+
+	measure 'Average Response Hours' =
+			
+			AVERAGE(Referrals[ResponseHours])
+		formatString: 0.0
+		displayFolder: KPIs
+		lineageTag: aa02e364-8735-445f-bff5-acb80ffc544d
+
+	measure 'Total Referrals' = COUNTROWS(Referrals)
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 305279ee-6aa7-490b-a8fb-319836194f54
+
+	measure 'Total Referrals Card' = FORMAT([Total Referrals], "#,0")
+		displayFolder: Display (text)
+		lineageTag: ab20faa5-1797-48b2-925e-f97f6b294989
+
+	measure 'Complaint Rate' = DIVIDE(SUM(Referrals[ComplaintFlag]), [Completed Referrals])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: KPIs
+		lineageTag: 5687b500-b241-4605-b4d0-bba4c136009d
+
+	measure 'Average Satisfaction Score' =
+			
+			AVERAGE(Referrals[SatisfactionScore])
+		formatString: 0.0
+		displayFolder: KPIs
+		lineageTag: 3238e945-eb0a-456d-be33-af7dbb8e4ca4
+
+	measure 'Completed Referrals' =
+			
+			CALCULATE(
+			    COUNTROWS(Referrals),
+			    Referrals[Status] = "Completed"
+			)
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 07612423-405c-4678-843a-ad39a4a010cc
+
+	measure 'Completion Rate' =
+			
+			DIVIDE(
+			    [Completed Referrals],
+			    [Total Referrals],
+			    0
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: KPIs
+		lineageTag: a5dd7cca-4854-4289-9b7c-d79e2ec007ab
+
+	measure 'Completed Referrals Card' = FORMAT([Completed Referrals], "#,0")
+		displayFolder: Display (text)
+		lineageTag: 1c51b244-d878-4320-a47f-f9f9a8aaf10f
+
+	measure '% Within Response Target' = ```
+			
+			   DIVIDE(
+			       COUNTROWS(
+			           FILTER(
+			               Referrals,
+			               Referrals[ResponseHours] <= RELATED(ServiceTypes[TargetResponseHours])
+			           )
+			       ),
+			       COUNTROWS(
+			           FILTER(Referrals, NOT ISBLANK(Referrals[ResponseHours]))
+			       )
+			   )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: KPIs
+		lineageTag: 6b4e0d46-ab5a-45cf-bdfc-d15880304f19
+
+	measure 'Active Staff' = DISTINCTCOUNT(Referrals[StaffID])
+		formatString: 0
+		displayFolder: Staff
+		lineageTag: 39fb7a8f-b2e9-46fe-bc6d-c92017e29d41
+
+	measure 'Team Avg Completion' = CALCULATE([Completion Rate], ALL(Staff))
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Staff
+		lineageTag: 7b0d77c0-ab13-43d5-adbd-6ab36240df2d
+
+	measure 'Completion vs Team' = [Completion Rate] - [Team Avg Completion]
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Staff
+		lineageTag: 27270ccb-0c0f-4b49-a5c7-cb107732caf0
+
+	measure 'Clinical Completion' = CALCULATE([Completion Rate], Staff[Staff Category] = "Clinical")
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Staff
+		lineageTag: b94356ca-3116-4f5a-8202-264cecb3e4a8
+
+	measure 'Non-clinical Completion' = CALCULATE([Completion Rate], Staff[Staff Category] = "Non-clinical")
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Staff
+		lineageTag: 9dfadcc4-80a2-4d00-a218-626b07ecbcd4
+
+	measure 'Staff Needing Support' =
+			VAR TeamRate = [Team Avg Completion]
+			RETURN
+			    COUNTROWS(
+			        FILTER(
+			            VALUES(Staff[StaffID]),
+			            [Completion Rate] < TeamRate - 0.05
+			        )
+			    ) + 0
+		formatString: 0
+		displayFolder: Staff
+		lineageTag: d0d70ffe-d4a6-4bdf-84cc-6cc512d86a5d
+
+	measure 'Cancelled Referrals' = CALCULATE(COUNTROWS(Referrals), Referrals[Status] = "Cancelled")
+		formatString: 0
+		displayFolder: Operations
+		lineageTag: 90eff225-b141-4fd1-a866-54e347cd72ff
+
+	measure 'No-show Referrals' = CALCULATE(COUNTROWS(Referrals), Referrals[Status] = "No-show")
+		formatString: 0
+		displayFolder: Operations
+		lineageTag: 1da8f4a4-4071-43b6-8174-193e065be70e
+
+	measure 'Cancel or No-show Rate' = DIVIDE([Cancelled Referrals] + [No-show Referrals], [Total Referrals])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Operations
+		lineageTag: 626e4fc8-b102-4836-ba25-cc5843fa4a32
+
+	measure 'Avg Days to Visit' = AVERAGEX(FILTER(Referrals, NOT ISBLANK(Referrals[VisitDate])), DATEDIFF(Referrals[ReferralDate], Referrals[VisitDate], DAY))
+		formatString: 0.0
+		displayFolder: Operations
+		lineageTag: b998c9a5-3736-4152-afb5-837100a21577
+
+	measure 'Weeks in Period' = DIVIDE(COUNTROWS('Calendar'), 7)
+		formatString: 0.0
+		displayFolder: Operations
+		lineageTag: bcc6bdfc-92bd-4e51-bdc7-18ea4d6ef596
+
+	measure 'Avg Weekly Referrals' = DIVIDE([Total Referrals], [Weeks in Period])
+		formatString: 0.0
+		displayFolder: Operations
+		lineageTag: 66ce309c-26e7-4d27-98a6-ea602925a448
+
+	measure 'Referrals per Staff per Week' = DIVIDE([Avg Weekly Referrals], [Active Staff])
+		formatString: 0.0
+		displayFolder: Operations
+		lineageTag: a250e802-350a-46df-bc48-3af19d6b7e8c
+
+	measure 'Max Staff Weekly Load' = MAXX(VALUES(Staff[StaffID]), [Referrals per Staff per Week])
+		formatString: 0.0
+		displayFolder: Operations
+		lineageTag: 5043fe8f-032c-4bd5-a7e9-ebdd5291ac27
+
+	measure 'Ramp-up %' = SELECTEDVALUE('Ramp-up Scenario'[Referral Growth %], 30) / 100
+		formatString: 0%;-0%;0%
+		displayFolder: Operations
+		lineageTag: af0f7988-e0fd-49fd-8fff-b7b6a64eb511
+
+	measure 'Projected Weekly Referrals' = [Avg Weekly Referrals] * (1 + [Ramp-up %])
+		formatString: 0.0
+		displayFolder: Operations
+		lineageTag: 51c36ac2-6c63-41c5-98d8-d74a5f63ca70
+
+	measure 'Staff Needed at Ramp-up' = ROUNDUP(DIVIDE([Projected Weekly Referrals], [Max Staff Weekly Load]), 0)
+		formatString: 0
+		displayFolder: Operations
+		lineageTag: ad338492-b4a3-4f30-8e09-1adff4d032a5
+
+	measure 'Additional Staff Needed' = MAX(0, [Staff Needed at Ramp-up] - [Active Staff])
+		formatString: 0
+		displayFolder: Operations
+		lineageTag: 1f364a8c-15a3-48de-a025-113966c1908d
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
